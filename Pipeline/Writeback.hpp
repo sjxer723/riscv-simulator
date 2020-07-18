@@ -4,7 +4,7 @@
 
 #include"../instruction.hpp"
 #include"../type.hpp"
-#include"../Register.hpp"
+#include"../register.hpp"
 #include"../Memory.hpp"
 #include<iostream>
 #ifndef SERIAL_WRITEBACK_HPP
