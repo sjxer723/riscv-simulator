@@ -10,7 +10,7 @@
 #include<cstring>
 #include"type.hpp"
 #include"Memory.hpp"
-#include"Register.hpp"
+#include"register.hpp"
 #include"Pipeline/Decode.hpp"
 #include"Pipeline/Excute.hpp"
 #include"Pipeline/Fetch.hpp"
