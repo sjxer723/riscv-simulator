@@ -48,7 +48,7 @@ public:
     }
     void serial(){
         run();
-        std::cout/*<<"result="*/<<((reg.read(11))&255u)<<std::endl;
+        std::cout/*<<"result="*/<<((reg.read(10))&255)<<std::endl;
         //for(int j=0;j<32;j++)std::cout<<(reg.read(j))<<' ';
     }
 };
