@@ -50,7 +50,7 @@ public:
                     case 7: type = BGEU; break;		// 111
                 }
                 break;
-            case 3:														// 0000011
+            case 3:	// 0000011
                 switch(func3) {
                     case 0: type = LB; break;			// 000
                     case 1: type = LH; break;			// 001
@@ -59,23 +59,23 @@ public:
                     case 5: type = LHU; break;		// 101
                 }
                 break;
-            case 35:													// 0100011
+            case 35:// 0100011
                 switch(func3) {
                     case 0:	type = SB; break;			// 000
                     case 1: type = SH; break;			// 001
                     case 2: type = SW; break;			// 010
                 }
                 break;
-            case 19:													// 0010011
+            case 19:// 0010011
                 switch(func3) {
                     case 0: type = ADDI; break;		// 000
                     case 1:	type = SLLI; break;		// 001
                     case 2: type = SLTI; break;		// 010
                     case 3: type = SLTIU; break;	// 011
                     case 4: type = XORI;	break; 	// 100
-                    case 5:												// 101
+                    case 5:	// 101
                         if(func7 == 0) type = SRLI;	// 0000000
-                        else type = SRAI;						// 0100000
+                        else type = SRAI;// 0100000
                         break;
                     case 6: type = ORI; break;		// 110
                     case 7: type = ANDI; break;		// 111
@@ -83,20 +83,20 @@ public:
                 break;
             case 51:
                 switch(func3) {
-                    case 0:												// 000
+                    case 0:	// 000
                         if (func7 == 0) type = ADD;	// 0000000
-                        else type = SUB;						// 0100000
+                        else type = SUB;// 0100000
                         break;
                     case 1: type = SLL; break;		// 001
                     case 2: type = SLT;	break;		// 010
                     case 3: type = SLTU; break;		// 011
                     case 4: type = XOR; break;		// 100
-                    case 5:												// 101
+                    case 5:	// 101
                         if(func7 == 0) type = SRL;	// 0000000
-                        else type = SRA; 						// 0100000
+                        else type = SRA; // 0100000
                         break;
-                    case 6: type = OR; break;			// 110
-                    case 7: type = AND; break;		// 111
+                    case 6: type = OR; break;// 110
+                    case 7: type = AND; break;// 111
                 }
                 break;
             default: break;
