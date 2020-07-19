@@ -29,8 +29,9 @@ private:
 
     void run(){
         mem->parse();
-        while(IF.instruction.instr!=0x0ff00513||!mem->full()) {
+        while(!mem->full()) {
             IF.perform();
+            if(IF.instruction.instr==0x0ff00513)break;
             IF.pass(ID);
             ID.perform();
             ID.pass(EX);
