@@ -29,7 +29,7 @@ private:
 
     void run(){
         mem->parse();
-        while(!mem->full()) {
+        while(IF.instruction.instr!=0x0ff00513||!mem->full()) {
             IF.perform();
             IF.pass(ID);
             ID.perform();
