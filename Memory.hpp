@@ -38,7 +38,6 @@ public:
         memset(temp, 0, sizeof(temp));
         int adr = 0;
         while (std::cin >> temp) {
-            if (temp[0] == '#')break;
             if (temp[0] == '@') {
                 adr = fetch(temp + 1);
                 //std::cout<<"success @"<<std::endl;
