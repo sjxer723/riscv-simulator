@@ -49,7 +49,7 @@ class Decode {
             instruction.src1 = regist->read(instruction.rs1);
             instruction.src2 = regist->read(instruction.rs2);
             instruction.resultpc = regist->get_pc();
-            instruction.pre = pre->prediction(instruction.type);
+            instruction.pre = pre->prediction();
             break;
         //无需更改pc的指令
         // R-I指令
@@ -95,7 +95,7 @@ class Decode {
     void branchpredict() {
         if (instruction.type == BEQ || instruction.type == BNE || instruction.type == BGE || instruction.type == BLT ||
             instruction.type == BGEU || instruction.type == BLTU) {
-            instruction.pre = pre->prediction(instruction.type);
+            instruction.pre = pre->prediction();
             //若预测成功，在ID阶段就修改PC
             if (instruction.pre)
                 regist->write_pc(instruction.resultpc - 4 + instruction.imm);

@@ -8,256 +8,39 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
-class predict {
-    enum InsType {
-        EMPTY,
-        LUI,
-        AUIPC,
-        JAL,
-        JALR,
-        BEQ,
-        BNE,
-        BLT,
-        BGE,
-        BLTU,
-        BGEU,
-        LB,
-        LH,
-        LW,
-        LBU,
-        LHU,
-        SB,
-        SH,
-        SW,
-        ADDI,
-        SLTI,
-        SLTIU,
-        XORI,
-        ORI,
-        ANDI,
-        SLLI,
-        SRLI,
-        SRAI,
-        ADD,
-        SUB,
-        SLL,
-        SLT,
-        SLTU,
-        XOR,
-        SRL,
-        SRA,
-        OR,
-        AND,
-        LOCK
-    };
+#include "instruction.hpp"
 
+int StateForward(int s, int jump_or_not)
+{
+    switch (s)
+    {
+    case 0: return jump_or_not?1:0;
+    case 1: return jump_or_not?2:0;
+    case 2: return jump_or_not?3:1;
+    case 3: return jump_or_not?3:2;
+    }
+    return s;
+}
+
+class predict {  
   private:
-    // success是总成功次数，total是总预测次数
-    std::vector<int> BEQrec;
-    std::vector<int> BNErec;
-    std::vector<int> BLTrec;
-    std::vector<int> BGErec;
-    std::vector<int> BLTUrec;
-    std::vector<int> BGEUrec;
+    int TwoBitState;
 
   public:
     int success, total;
-    predict() {
-        BEQrec.clear();
-        BNErec.clear();
-        BLTrec.clear();
-        BGErec.clear();
-        BLTUrec.clear();
-        BGEUrec.clear();
+    predict() { TwoBitState = 0; success =0; total = 0;}
+    int prediction() {
+        return (TwoBitState>=2)?1:0;
     }
-
-    bool prediction(int type) {
-        int count = 0;
-        switch (type) {
-        case BEQ: {
-            for (int i = 0; i < 10 && i < (int)BEQrec.size(); i++) {
-                count += BEQrec[i];
-            }
-            if (count < 0)
-                return false;
-            else
-                return true;
-        }
-        case BNE: {
-            for (int i = 0; i < 10 && i < (int)BNErec.size(); i++) {
-                count += BNErec[i];
-            }
-            if (count < 0)
-                return false;
-            else
-                return true;
-        }
-        case BLT: {
-            for (int i = 0; i < 10 && i < (int)BLTrec.size(); i++) {
-                count += BLTrec[i];
-            }
-            if (count < 0)
-                return false;
-            else
-                return true;
-        }
-        case BGE: {
-            for (int i = 0; i < 10 && i < (int)BGErec.size(); i++) {
-                count += BGErec[i];
-            }
-            if (count < 0)
-                return false;
-            else
-                return true;
-        }
-        case BLTU: {
-            for (int i = 0; i < 10 && i < (int)BLTUrec.size(); i++) {
-                count += BLTUrec[i];
-            }
-            if (count < 0)
-                return false;
-            else
-                return true;
-        }
-        case BGEU: {
-            for (int i = 0; i < 10 && i < (int)BGEUrec.size(); i++) {
-                count += BGEUrec[i];
-            }
-            if (count < 0)
-                return false;
-            else
-                return true;
-        }
-        default:
-            return true;
-        }
-        return true;
-    }
-    void record(int type, bool result, bool suc) {
-        switch (type) {
-        case BEQ:
-            if (result) {
-                if (BEQrec.size() < 10)
-                    BEQrec.push_back(1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BEQrec[i - 1] = BEQrec[i];
-                    BEQrec[9] = 1;
-                }
-            } else {
-                if (BEQrec.size() < 10)
-                    BEQrec.push_back(-1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BEQrec[i - 1] = BEQrec[i];
-                    BEQrec[9] = -1;
-                }
-            }
-            break;
-        case BNE:
-            if (result) {
-                if (BNErec.size() < 10)
-                    BNErec.push_back(1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BNErec[i - 1] = BNErec[i];
-                    BNErec[9] = 1;
-                }
-            } else {
-                if (BNErec.size() < 10)
-                    BNErec.push_back(-1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BNErec[i - 1] = BNErec[i];
-                    BNErec[9] = -1;
-                }
-            }
-            break;
-        case BLT:
-            if (result) {
-                if (BLTrec.size() < 10)
-                    BLTrec.push_back(1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BLTrec[i - 1] = BLTrec[i];
-                    BLTrec[9] = 1;
-                }
-            } else {
-                if (BLTrec.size() < 10)
-                    BLTrec.push_back(-1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BLTrec[i - 1] = BLTrec[i];
-                    BLTrec[9] = -1;
-                }
-            }
-            break;
-        case BGE:
-            if (result) {
-                if (BGErec.size() < 10)
-                    BGErec.push_back(1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BGErec[i - 1] = BGErec[i];
-                    BGErec[9] = 1;
-                }
-            } else {
-                if (BGErec.size() < 10)
-                    BGErec.push_back(-1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BGErec[i - 1] = BGErec[i];
-                    BGErec[9] = -1;
-                }
-            }
-            break;
-        case BLTU:
-            if (result) {
-                if (BLTUrec.size() < 10)
-                    BLTUrec.push_back(1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BLTUrec[i - 1] = BLTUrec[i];
-                    BLTUrec[9] = 1;
-                }
-            } else {
-                if (BLTUrec.size() < 10)
-                    BLTUrec.push_back(-1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BLTUrec[i - 1] = BLTUrec[i];
-                    BLTUrec[9] = -1;
-                }
-            }
-            break;
-        case BGEU:
-            if (result) {
-                if (BGEUrec.size() < 10)
-                    BGEUrec.push_back(1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BGEUrec[i - 1] = BGEUrec[i];
-                    BGEUrec[9] = 1;
-                }
-            } else {
-                if (BGEUrec.size() < 10)
-                    BGEUrec.push_back(-1);
-                else {
-                    for (int i = 1; i < 10; i++)
-                        BGEUrec[i - 1] = BGEUrec[i];
-                    BGEUrec[9] = -1;
-                }
-            }
-            break;
-        }
-        if (suc)
-            ++success;
+    void record(int type, int result, int success_or_not) {
+        TwoBitState = StateForward(TwoBitState, result);
+        if (success_or_not) ++success;
         ++total;
     }
-    void print() {
+    void debug() {
         std::cout << "success" << success << " "
                   << "total" << total << std::endl;
         std::cout << "rate=" << (double)success / total << std::endl;
     }
 };
-#endif // RISC_V_PREDICTION_HPP
+#endif
