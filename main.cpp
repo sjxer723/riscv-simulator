@@ -1,5 +1,5 @@
 #include "Memory.hpp"
-#include "RISCV.hpp"
+#include "cpu.hpp"
 #include "register.hpp"
 #include <iostream>
 #include <stdio.h>
@@ -8,7 +8,7 @@
 using namespace std;
 
 Memory mem;
-RISCV simulator(&mem);
+CPU simulator(&mem);
 
 int main() {
     simulator.parrael();

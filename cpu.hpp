@@ -12,10 +12,10 @@
 #include <iostream>
 #include <stdio.h>
 
-#ifndef _RISCV_HPP_
-#define _RISCV_HPP_
+#ifndef _CPU_HPP_
+#define _CPU_HPP_
 
-class RISCV {
+class CPU {
   private:
     Memory *mem;
     Register reg;
@@ -28,7 +28,7 @@ class RISCV {
     predict p;
 
   public:
-    RISCV(Memory *m)
+    CPU(Memory *m)
         : reg(0, m), IF(&reg), ID(&reg, &p), EX(&reg, &p), ma(&reg), wb(&reg) {
         mem = m;
     }
