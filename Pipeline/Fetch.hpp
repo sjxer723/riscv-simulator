@@ -1,33 +1,37 @@
-# ifndef _INSTRUCTIONFETCH_
-# define _INSTRUCTIONFETCH_
+#ifndef _INSTRUCTIONFETCH_
+#define _INSTRUCTIONFETCH_
 
-#include<iostream>
-# include "Decode.hpp"
-# include "../register.hpp"
-# include "../instruction.hpp"
+#include "../instruction.hpp"
+#include "../register.hpp"
+#include "Decode.hpp"
+#include <iostream>
 
 class Fetch {
-		friend class RISCV;
-	private:
-		Register *regist;
+    friend class RISCV;
 
-	public:
-		ins instruction;
-        bool notrun;
+  private:
+    Register *regist;
 
-		Fetch(Register *r):regist(r),notrun(0){}
+  public:
+    ins instruction;
+    bool notrun;
 
-		void perform() {
-		    if(regist->usedpc)notrun=true;
-		    else{
-		        notrun=false;
-		        instruction.instr=regist->getinst();
-		        //std::cout<<instruction.instr<<std::endl;
-		    }
-		}
-		void pass(Decode &next) {
-			next.instruction=instruction;
-			if(notrun){next.instruction.type=LOCK;}
-		}
+    Fetch(Register *r) : regist(r), notrun(0) {}
+
+    void perform() {
+        if (regist->usedpc)
+            notrun = true;
+        else {
+            notrun = false;
+            instruction.instr = regist->getinst();
+            // std::cout<<instruction.instr<<std::endl;
+        }
+    }
+    void pass(Decode &next) {
+        next.instruction = instruction;
+        if (notrun) {
+            next.instruction.type = LOCK;
+        }
+    }
 };
-# endif
+#endif
