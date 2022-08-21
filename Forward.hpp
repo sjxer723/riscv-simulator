@@ -4,7 +4,7 @@
 #ifndef RISC_V_FORWARD_HPP
 #define RISC_V_FORWARD_HPP
 #include "Pipeline/Decode.hpp"
-#include "Pipeline/Excute.hpp"
+#include "Pipeline/Execute.hpp"
 #include "Pipeline/Fetch.hpp"
 #include "Pipeline/Memoryaccess.hpp"
 #include "Pipeline/Writeback.hpp"
@@ -16,7 +16,7 @@ class Forwarding {
 
   public:
     // EXE阶段需要使用还未存入寄存器中的数据
-    void MA_Forward_EX(MA &ma, Excute &EX) {
+    void MA_Forward_EX(MA &ma, Execute &EX) {
         switch (ma.instruction.type) {
         case LUI:
         case AUIPC:
@@ -46,13 +46,11 @@ class Forwarding {
         case SRA:
         case OR:
         case AND:
-            if (ma.instruction.rd == EX.instruction.rs1 &&
-                ma.instruction.rd != 0) {
+            if (ma.instruction.rd == EX.instruction.rs1 && ma.instruction.rd != 0) {
                 // EXE阶段需要使用还未存入寄存器中的数据
                 EX.instruction.src1 = ma.instruction.res;
             }
-            if (ma.instruction.rd == EX.instruction.rs2 &&
-                ma.instruction.rd != 0) {
+            if (ma.instruction.rd == EX.instruction.rs2 && ma.instruction.rd != 0) {
                 EX.instruction.src2 = ma.instruction.res;
             }
             break;
@@ -92,13 +90,11 @@ class Forwarding {
         case SRA:
         case OR:
         case AND:
-            if (ma.instruction.rd == ID.instruction.rs1 &&
-                ma.instruction.rd != 0) {
+            if (ma.instruction.rd == ID.instruction.rs1 && ma.instruction.rd != 0) {
                 // ID阶段要读未存入寄存器的值
                 ID.instruction.src1 = ma.instruction.res;
             }
-            if (ma.instruction.rd == ID.instruction.rs2 &&
-                ma.instruction.rd != 0) {
+            if (ma.instruction.rd == ID.instruction.rs2 && ma.instruction.rd != 0) {
                 // ID阶段要读未存入寄存器的值
                 ID.instruction.src2 = ma.instruction.res;
             }

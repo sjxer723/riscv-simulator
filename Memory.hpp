@@ -11,7 +11,7 @@
 
 class Memory {
   private:
-	uchar mem[MAXN];
+    uchar mem[MAXN];
     bool is_full;
 
   public:

@@ -53,7 +53,6 @@ class predict {
 
   private:
     // success是总成功次数，total是总预测次数
-    double success, total;
     std::vector<int> BEQrec;
     std::vector<int> BNErec;
     std::vector<int> BLTrec;
@@ -62,8 +61,8 @@ class predict {
     std::vector<int> BGEUrec;
 
   public:
+    int success, total;
     predict() {
-        success = 0, total = 0;
         BEQrec.clear();
         BNErec.clear();
         BLTrec.clear();
@@ -258,7 +257,7 @@ class predict {
     void print() {
         std::cout << "success" << success << " "
                   << "total" << total << std::endl;
-        std::cout << "rate=" << (double)(success / total) << std::endl;
+        std::cout << "rate=" << (double)success / total << std::endl;
     }
 };
 #endif // RISC_V_PREDICTION_HPP

@@ -48,7 +48,7 @@ enum InsType {
 class ins {
     friend class Fetch;
     friend class Decode;
-    friend class Excute;
+    friend class Execute;
     friend class MA;
     friend class WB;
 
@@ -59,9 +59,7 @@ class ins {
     uint src1, src2;
     uint res, pre, resultpc; // pre存放预测结果
 
-    ins() {
-        instr = imm = rd = rs1 = rs2 = src1 = src2 = res = pre = resultpc = 0;
-    }
+    ins() { instr = imm = rd = rs1 = rs2 = src1 = src2 = res = pre = resultpc = 0; }
     void Type() {
         uint opcode, func3, func7;
         opcode = (instr & 127);

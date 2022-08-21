@@ -1,7 +1,7 @@
 #include "../instruction.hpp"
 #include "../prediction.hpp"
 #include "../register.hpp"
-#include "Excute.hpp"
+#include "Execute.hpp"
 
 #ifndef _DECODE_
 #define _DECODE_
@@ -93,8 +93,7 @@ class Decode {
     }
     //加入分支预测
     void branchpredict() {
-        if (instruction.type == BEQ || instruction.type == BNE ||
-            instruction.type == BGE || instruction.type == BLT ||
+        if (instruction.type == BEQ || instruction.type == BNE || instruction.type == BGE || instruction.type == BLT ||
             instruction.type == BGEU || instruction.type == BLTU) {
             instruction.pre = pre->prediction(instruction.type);
             //若预测成功，在ID阶段就修改PC
@@ -127,7 +126,7 @@ class Decode {
             lockit();
         }
     }
-    void pass(Excute &next) {
+    void pass(Execute &next) {
         next.instruction = instruction;
         if (notrun)
             next.instruction.type = LOCK;

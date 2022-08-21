@@ -1,15 +1,13 @@
 #include "Forward.hpp"
 #include "Memory.hpp"
 #include "Pipeline/Decode.hpp"
-#include "Pipeline/Excute.hpp"
+#include "Pipeline/Execute.hpp"
 #include "Pipeline/Fetch.hpp"
 #include "Pipeline/Memoryaccess.hpp"
 #include "Pipeline/Writeback.hpp"
 #include "register.hpp"
 #include "type.hpp"
 #include <cstring>
-#include <fstream>
-#include <iostream>
 #include <stdio.h>
 
 #ifndef _CPU_HPP_
@@ -17,24 +15,26 @@
 
 class CPU {
   private:
-    Memory *mem;
-    Register reg;
-    Fetch IF;
-    Decode ID;
-    Excute EX;
-    MA ma;
-    WB wb;
-    Forwarding forward;
-    predict p;
+    Memory *mem;        // The register pointing to the main memory
+    Register regs;      // Comman registers
+    Fetch IF;           // Fetch stage
+    Decode ID;          // Decode stage
+    Execute EX;         // Excute stage
+    MA ma;              // Memory access stage
+    WB wb;              // Writeback stage
+    Forwarding forward; // Data forward
+    predict p;          // The branch predictor
+    int cycles;         // Clock Cycles
 
   public:
-    CPU(Memory *m)
-        : reg(0, m), IF(&reg), ID(&reg, &p), EX(&reg, &p), ma(&reg), wb(&reg) {
+    CPU(Memory *m) : regs(0, m), IF(&regs), ID(&regs, &p), EX(&regs, &p), ma(&regs), wb(&regs) {
         mem = m;
+        cycles = 0;
     }
     void run() {
         mem->parse();
         while (true) {
+            cycles++;
             wb.perform();
             ma.perform();
             //转发
@@ -45,21 +45,30 @@ class CPU {
             ID.perform();
             forward.MA_Forward_ID(ma, ID);
             IF.perform();
-            if (IF.instruction.instr == 0x0ff00513 || mem->full())
-                break;
-            //下一批阶段到达时钟周期
-            ma.pass(wb); // 1
-            EX.pass(ma); // 2
-            ID.pass(EX); // 3
-            IF.pass(ID); // 4
+            if (IF.instruction.instr == 0x0ff00513) // Encounter li a0, 255 (means return)
+                return;
+            if (mem->full()) {
+                fprintf(stderr, "The main memory is full\n");
+                return;
+            }
+            ma.pass(wb);
+            EX.pass(ma);
+            ID.pass(EX);
+            IF.pass(ID);
         }
+    }
+    void show_statistic_data() {
+        uint result = ((regs.read(10)) & 255); // Read the result from a0
+        fprintf(stdout, "Execution result:                             %d\n", result);
+        fprintf(stdout, "Total executing time:                         %d(cycles)\n", cycles);
+        fprintf(stdout, "Success branch prediction:                    %d\n", EX.p->success);
+        fprintf(stdout, "Total branch cnnditions:                      %d\n", EX.p->total);
+        fprintf(stdout, "Successful conditional prediction  rate:      %.2f\n",
+                (EX.p->total != 0) ? (double)EX.p->success / EX.p->total : 0);
     }
     void parrael() {
         run();
-        uint result = ((reg.read(10)) & 255);
-        std::cout /*<<"result="*/ << result << std::endl;
-        // reg.debug();
-        // p.print();
+        show_statistic_data();
     }
 };
 
