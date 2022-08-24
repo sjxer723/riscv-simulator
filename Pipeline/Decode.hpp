@@ -15,8 +15,9 @@ class Decode {
 
   public:
     ins instruction;
+    int fun_call_num;
     bool notrun;
-    Decode(Register *r, predict *p) : regist(r), pre(p), notrun(false) {}
+    Decode(Register *r, predict *p) : regist(r), pre(p), notrun(false), fun_call_num(0) {}
 
     bool set() {
         switch (instruction.type) {
@@ -31,12 +32,14 @@ class Decode {
             if (regist->usedpc)
                 return false;
             instruction.res = regist->get_pc();
+            fun_call_num++;
             break;
         case JALR:
             if (regist->usedpc)
                 return false;
             instruction.src1 = regist->read(instruction.rs1);
             instruction.res = regist->get_pc();
+            fun_call_num++;
             break;
         case BEQ:
         case BNE:

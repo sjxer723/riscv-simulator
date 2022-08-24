@@ -61,6 +61,7 @@ class CPU {
         uint result = ((regs.read(10)) & 255); // Read the result from a0
         fprintf(stdout, "Execution result:                             %d\n", result);
         fprintf(stdout, "Total executing time:                         %d(cycles)\n", cycles);
+        fprintf(stdout, "Funtion call times:                           %d\n", ID.fun_call_num);
         fprintf(stdout, "Success branch prediction:                    %d\n", EX.p->success);
         fprintf(stdout, "Total branch cnnditions:                      %d\n", EX.p->total);
         fprintf(stdout, "Successful conditional prediction  rate:      %.2f\n",
